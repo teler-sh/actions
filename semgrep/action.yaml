@@ -2,10 +2,10 @@ name: 'Semgrep'
 description: 'Run returntocorp/semgrep'
 
 inputs:
-  fail-on-severity:
-    description: 'Defines the threshold for the level of severity'
+  rules:
+    description: 'Run with specific rules'
     required: true
-    default: 'moderate'
+    default: 'auto'
 
 runs:
   using: "composite"
@@ -17,5 +17,5 @@ runs:
     - run: pip install -r $GITHUB_ACTION_PATH/requirements.txt
     - run: semgrep ci
       env:
-        SEMGREP_RULES: ${{ inputs.semgrep-rules }}
+        SEMGREP_RULES: ${{ inputs.rules }}
       shell: bash

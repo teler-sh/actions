@@ -15,6 +15,7 @@ runs:
         cache: 'pip'
         cache-dependency-path: '${{ github.action_path }}/requirements.txt'
     - run: pip install -r $GITHUB_ACTION_PATH/requirements.txt
+      shell: bash
     - run: semgrep ci
       env:
         SEMGREP_RULES: ${{ inputs.rules }}

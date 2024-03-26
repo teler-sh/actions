@@ -1,0 +1,17 @@
+name: 'Semgrep'
+description: 'Run returntocorp/semgrep'
+
+inputs:
+  fail-on-severity:
+    description: 'Defines the threshold for the level of severity'
+    required: true
+    default: 'moderate'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: docker://returntocorp/semgrep
+    - run: semgrep ci
+      env:
+        SEMGREP_RULES: ${{ inputs.semgrep-rules }}
+      shell: bash

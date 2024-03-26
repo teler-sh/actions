@@ -1,0 +1,20 @@
+name: 'Dependency Review'
+description: 'Run actions/dependency-review-action'
+
+inputs:
+  fail-on-severity:
+    description: 'Defines the threshold for the level of severity'
+    required: true
+    default: 'moderate'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: ${{ inputs.fail-on-severity }}
+        comment-summary-in-pr: on-failure
+        license-check: false
+        vulnerability-check: true
+        base-ref: ${{ github.ref }}
+        head-ref: ${{ github.ref }}

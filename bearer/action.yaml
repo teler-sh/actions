@@ -1,0 +1,41 @@
+name: 'Bearer'
+description: 'Run bearer/bearer-action'
+
+inputs:
+  token:
+    description: 'GitHub token'
+    required: true
+  diff:
+    description: 'Enable differential scanning'
+    default: false
+    required: true
+  severity:
+    description: 'Run with severities'
+    default: 'high,critical'
+    required: true
+  skip-path:
+    description: 'Run with skip paths'
+    default: 'examples/'
+    required: false
+  output:
+    description: 'Specify output file'
+    default: '/tmp/rd.json'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: bearer/bearer-action@v2
+      with:
+        format: rdjson
+        output: ${{ inputs.output }}
+        diff: ${{ inputs.diff }}
+        severity: ${{ inputs.severity }}
+        skip-path: ${{ inputs.skip-path }}
+        exit-code: 1
+    - name: reviewdog
+      if: inputs.diff == true
+      run: cat ${{ inputs.output }} | reviewdog -f=rdjson -reporter=github-pr-review
+      env:
+        REVIEWDOG_GITHUB_API_TOKEN: ${{ inputs.token }}
+      shell: bash

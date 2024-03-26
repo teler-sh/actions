@@ -1,9 +1,5 @@
-name: 'Cache teler-resources'
+name: 'Get teler-resources'
 description: 'Configure teler-resources'
-
-outputs:
-  cache-hit:
-    value: ${{ steps.teler-resources.outputs.cache-hit }}
 
 runs:
   using: "composite"
@@ -18,6 +14,11 @@ runs:
         path: ~/.cache/teler-waf
         key: teler-resources-${{ steps.today.outputs.date }}
         restore-keys: teler-resources-${{ steps.today.outputs.date }}-
-    - run: cp -a ~/.cache/teler-waf/ /tmp/.teler-resources-${{ steps.today.outputs.date }}
+    - name: copying
       if: steps.teler-resources.outputs.cache-hit == 'true'
+      run: $GITHUB_ACTION_PATH/copy.sh
+      shell: bash
+    - name: download
+      if: steps.teler-resources.outputs.cache-hit != 'true'
+      run: $GITHUB_ACTION_PATH/download.sh
       shell: bash

@@ -1,0 +1,15 @@
+name: 'GolangCI Lint'
+description: 'Run actions/dependency-review-action'
+
+inputs:
+  args:
+    description: 'Run with arguments'
+    required: false
+    default: '--timeout=5m'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: golangci/golangci-lint-action@v4
+      with:
+        args: ${{ inputs.args }}

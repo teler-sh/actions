@@ -1,0 +1,24 @@
+name: 'Get teler-resources'
+description: 'Configure teler-resources'
+
+runs:
+  using: "composite"
+  steps:
+    - name: today
+      id: today
+      run: echo "date=$(date +%d%m%Y)" >> "$GITHUB_OUTPUT"
+      shell: bash
+    - uses: actions/cache@v4
+      id: teler-resources
+      with:
+        path: ~/.cache/teler-waf
+        key: teler-resources-${{ steps.today.outputs.date }}
+        restore-keys: teler-resources-${{ steps.today.outputs.date }}-
+    - name: copying
+      if: steps.teler-resources.outputs.cache-hit == 'true'
+      run: $GITHUB_ACTION_PATH/copy.sh
+      shell: bash
+    - name: download
+      if: steps.teler-resources.outputs.cache-hit != 'true'
+      run: $GITHUB_ACTION_PATH/download.sh
+      shell: bash

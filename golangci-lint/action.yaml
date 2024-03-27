@@ -10,10 +10,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-go@v5
-      with:
-        go-version-file: 'go.mod'
-        cache-dependency-path: '**/go.sum'
+    - uses: teler-sh/actions/setup-go@v1
     - uses: golangci/golangci-lint-action@v4
       with:
         args: ${{ inputs.args }}

@@ -9,17 +9,27 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+
     - name: Is Dependabot?
       id: is-dependabot
       if: github.event.pull_request.user.login == 'dependabot[bot]'
       run: true
       shell: bash
 
+    - name: Get head commit message
+      id: commit
+      if: steps.is-dependabot.outcome == 'success'
+      run: echo "message=$(git show -s --format=%B)" >> "$GITHUB_OUTPUT"
+      shell: bash
+
     - name: Is patch update?
       id: patch-update
       if: >
         steps.is-dependabot.outcome == 'success' && contains(
-          github.event.head_commit.message, 'version-update:semver-patch'
+          steps.commit.outputs.message, 'version-update:semver-patch'
         )
       run: true
       shell: bash
@@ -36,7 +46,7 @@ runs:
         MERGE_RETRY_SLEEP: "10000"
         MERGE_REQUIRED_APPROVALS: "${{
           (
-            steps.is-dependabot.outcome == 'success' ||
+            steps.is-dependabot.outcome == 'success' &&
             steps.patch-update.outcome == 'success'
           ) &&
           0 || 1

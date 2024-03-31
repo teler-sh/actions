@@ -1,0 +1,24 @@
+name: 'Generates a Cosign key pair'
+description: 'Run sigstore/cosign-installer'
+
+inputs:
+  key-prefix:
+    description: 'Name used for generated .pub and .key files'
+    required: false
+    default: '${{ github.event.repository.name }}-release'
+  password:
+    description: 'Password used for private key file'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: sigstore/cosign-installer@v3.4.0
+    - run: cosign generate-key-pair --output-key-prefix "${{ inputs.key-prefix }}"
+      env:
+        COSIGN_PASSWORD: ${{ inputs.password }}
+      shell: bash
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.event.repository.name }}-cosign-key-${{ github.run_id }}
+        path: ${{ inputs.key-prefix }}.pub

@@ -17,6 +17,7 @@ runs:
     - run: cosign generate-key-pair --output-key-prefix "${{ inputs.key-prefix }}"
       env:
         COSIGN_PASSWORD: ${{ inputs.password }}
+        COSIGN_YES: true
       shell: bash
     - uses: actions/upload-artifact@v4
       with:

@@ -51,5 +51,8 @@ runs:
           ) &&
           0 || 1
         }}"
-        UPDATE_LABELS: ""
+        UPDATE_LABELS: "${{
+          steps.is-dependabot.outcome == 'success' &&
+          '' || 'outdated-branch'
+        }}"
         UPDATE_METHOD: "rebase"

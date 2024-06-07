@@ -32,7 +32,6 @@ runs:
         diff: ${{ inputs.diff }}
         severity: ${{ inputs.severity }}
         skip-path: ${{ inputs.skip-path }}
-        exit-code: 1
     - name: reviewdog
       if: inputs.diff == true
       run: cat ${{ inputs.output }} | reviewdog -f=rdjson -reporter=github-pr-review
